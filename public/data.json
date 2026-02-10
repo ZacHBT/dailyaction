@@ -1,0 +1,33 @@
+{
+  "lastUpdated": "2026-02-10T06:25:20.000Z",
+  "tasks": [
+    {
+      "id": "1",
+      "url": "https://notion.so/task1",
+      "name": "準備下午的工作會議",
+      "category": "工作",
+      "completed": false
+    },
+    {
+      "id": "2",
+      "url": "https://notion.so/task2",
+      "name": "撰寫專案實作計畫",
+      "category": "工作",
+      "completed": true
+    },
+    {
+      "id": "3",
+      "url": "https://notion.so/task3",
+      "name": "運動 30 分鐘",
+      "category": "個人",
+      "completed": false
+    },
+    {
+      "id": "4",
+      "url": "https://notion.so/task4",
+      "name": "閱讀《原子習慣》",
+      "category": "個人",
+      "completed": false
+    }
+  ]
+}
