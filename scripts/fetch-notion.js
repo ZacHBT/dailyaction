@@ -8,6 +8,12 @@ const DATABASE_ID = '182b6925914d806396dfe3524e726136';
 async function fetchTasks() {
   const today = DateTime.now().setZone('Asia/Taipei').toISODate();
   console.log(`Fetching tasks for ${today}...`);
+  console.log('Notion Client keys:', Object.keys(notion));
+  if (notion.databases) {
+    console.log('notion.databases keys:', Object.keys(notion.databases));
+  } else {
+    console.error('CRITICAL: notion.databases is undefined!');
+  }
 
   try {
     const response = await notion.databases.query({
