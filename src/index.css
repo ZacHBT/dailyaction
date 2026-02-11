@@ -162,63 +162,159 @@ h2,
   line-height: 1;
 }
 
-/* Celestial Wheel Rotation */
-.celestial-wheel-container {
+/* Astrolabe Mechanism */
+.astrolabe-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 10px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   padding: 10px;
+  perspective: 800px;
 }
 
-.celestial-wheel {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  border: 1px dashed rgba(139, 94, 60, 0.3);
+.astrolabe-body {
+  width: 100px;
+  height: 100px;
   position: relative;
-  transition: transform 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-}
-
-.wheel-day {
-  transform: rotate(0deg);
-}
-
-.wheel-night {
-  transform: rotate(180deg);
-}
-
-.celestial-icon {
-  position: absolute;
-  width: 32px;
-  height: 32px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.5rem;
+}
+
+/* Outer Ring - Fixed Frame */
+.astrolabe-ring-outer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
-  background: var(--paper-light);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  left: 50%;
-  margin-left: -16px;
-  /* Half of width to center */
+  background: conic-gradient(from 0deg,
+      #8b5e3c, #c2912e, #8b5e3c, #5d3a1a, #8b5e3c, #c2912e, #8b5e3c);
+  box-shadow:
+    0 5px 15px rgba(0, 0, 0, 0.4),
+    inset 0 0 10px rgba(0, 0, 0, 0.6);
+  border: 2px solid #5d3a1a;
+  z-index: 1;
 }
 
-.celestial-sun {
-  top: -16px;
-  color: var(--scroll-gold);
-  text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+/* Rotating Inner Plate */
+.astrolabe-plate {
+  position: absolute;
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #2c1e14 0%, #4a3b2a 90%);
+  border: 1px solid #c2912e;
   z-index: 2;
+  transition: transform 1.5s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+  /* Mechanical bounce effect */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.celestial-moon {
-  bottom: -16px;
+.day-mode .astrolabe-plate {
+  transform: rotate(0deg);
+}
+
+.night-mode .astrolabe-plate {
   transform: rotate(180deg);
-  color: var(--scroll-purple);
-  text-shadow: 0 0 10px rgba(139, 92, 246, 0.6);
+}
+
+/* Orbs (Sun & Moon) */
+.astrolabe-orb {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  z-index: 4;
+}
+
+.sun-orb {
+  top: 5px;
+}
+
+.moon-orb {
+  bottom: 5px;
+  transform: rotate(180deg);
+}
+
+.orb-glow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  opacity: 0.6;
+  filter: blur(8px);
+  z-index: -1;
+  transition: opacity 0.5s;
+}
+
+.day-mode .sun-orb .orb-glow {
+  background: gold;
+  opacity: 0.8;
+  box-shadow: 0 0 20px gold;
+}
+
+.night-mode .moon-orb .orb-glow {
+  background: #a78bfa;
+  opacity: 0.8;
+  box-shadow: 0 0 20px #8b5cf6;
+}
+
+/* Axis Line */
+.plate-axis {
+  position: absolute;
+  width: 2px;
+  height: 100%;
+  background: rgba(194, 145, 46, 0.3);
   z-index: 2;
+}
+
+/* Center Gear & Pivot */
+.astrolabe-center-gear {
+  position: absolute;
+  width: 30%;
+  height: 30%;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #c2912e, #5d3a1a, #c2912e, #5d3a1a);
+  z-index: 5;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #2c1e14;
+}
+
+.pivot-gem {
+  width: 50%;
+  height: 50%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(circle, #b91c1c, #450a0a);
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: background 1.5s;
+}
+
+.night-mode .pivot-gem {
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(circle, #7c3aed, #4c1d95);
+}
+
+/* Remove old styles */
+.celestial-wheel-container,
+.celestial-wheel,
+.wheel-day,
+.wheel-night,
+.celestial-icon,
+.celestial-sun,
+.celestial-moon {
+  display: none;
 }
 
 /* Status Badge Removed */

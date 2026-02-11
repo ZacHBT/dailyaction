@@ -81,10 +81,28 @@ const App = () => {
   );
 
   const CelestialCycle = ({ isWorkTime, toggleMode }) => (
-    <div className="celestial-wheel-container" onClick={toggleMode} title="Click to toggle Day/Night">
-      <div className={`celestial-wheel ${isWorkTime ? 'wheel-day' : 'wheel-night'}`}>
-        <div className="celestial-icon celestial-sun">☀️</div>
-        <div className="celestial-icon celestial-moon">🌙</div>
+    <div className="astrolabe-container" onClick={toggleMode} title="Click to toggle Day/Night">
+      <div className={`astrolabe-body ${isWorkTime ? 'day-mode' : 'night-mode'}`}>
+        {/* Outer Ring - Fixed or slowly rotating */}
+        <div className="astrolabe-ring-outer"></div>
+
+        {/* Main Rotating Plate */}
+        <div className="astrolabe-plate">
+          <div className="astrolabe-orb sun-orb">
+            <div className="orb-glow"></div>
+            <span className="orb-icon">☀️</span>
+          </div>
+          <div className="astrolabe-orb moon-orb">
+            <div className="orb-glow"></div>
+            <span className="orb-icon">🌙</span>
+          </div>
+          <div className="plate-axis"></div>
+        </div>
+
+        {/* Inner Gear / Pivot */}
+        <div className="astrolabe-center-gear">
+          <div className="pivot-gem"></div>
+        </div>
       </div>
     </div>
   );
