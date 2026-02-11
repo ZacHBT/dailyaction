@@ -80,6 +80,15 @@ const App = () => {
     </a>
   );
 
+  const CelestialCycle = ({ isWorkTime, toggleMode }) => (
+    <div className="celestial-wheel-container" onClick={toggleMode} title="Click to toggle Day/Night">
+      <div className={`celestial-wheel ${isWorkTime ? 'wheel-day' : 'wheel-night'}`}>
+        <div className="celestial-icon celestial-sun">☀️</div>
+        <div className="celestial-icon celestial-moon">🌙</div>
+      </div>
+    </div>
+  );
+
   return (
     <div className={`app-container ${isWorkTime ? 'mode-day' : 'mode-night'}`}>
 
@@ -90,9 +99,7 @@ const App = () => {
           {now.toFormat('HH:mm')}
           {manualMode && <span style={{ fontSize: '1rem', marginLeft: '10px', verticalAlign: 'middle' }}>({manualMode === 'day' ? 'Day' : 'Night'})</span>}
         </div>
-        <div className="status-badge">
-          {isWorkTime ? '☀️ 日間專注：日目標' : '🌙 夜間專注：夜目標'}
-        </div>
+        <CelestialCycle isWorkTime={isWorkTime} toggleMode={toggleMode} />
       </header>
 
       <main>

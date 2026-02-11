@@ -162,18 +162,66 @@ h2,
   line-height: 1;
 }
 
-.status-badge {
-  display: inline-block;
-  padding: 4px 16px;
-  font-family: var(--font-serif);
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  margin-top: 15px;
-  color: #8b5e3c;
-  border: 1px solid rgba(139, 94, 60, 0.4);
+/* Celestial Wheel Rotation */
+.celestial-wheel-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  padding: 10px;
 }
+
+.celestial-wheel {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 1px dashed rgba(139, 94, 60, 0.3);
+  position: relative;
+  transition: transform 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.wheel-day {
+  transform: rotate(0deg);
+}
+
+.wheel-night {
+  transform: rotate(180deg);
+}
+
+.celestial-icon {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  border-radius: 50%;
+  background: var(--paper-light);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  left: 50%;
+  margin-left: -16px;
+  /* Half of width to center */
+}
+
+.celestial-sun {
+  top: -16px;
+  color: var(--scroll-gold);
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+  z-index: 2;
+}
+
+.celestial-moon {
+  bottom: -16px;
+  transform: rotate(180deg);
+  color: var(--scroll-purple);
+  text-shadow: 0 0 10px rgba(139, 92, 246, 0.6);
+  z-index: 2;
+}
+
+/* Status Badge Removed */
 
 /* Illuminated Manuscript Style Sections */
 .section {
