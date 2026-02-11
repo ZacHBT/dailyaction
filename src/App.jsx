@@ -13,7 +13,7 @@ const App = () => {
     }, 60000);
 
     // Fetch tasks
-    fetch('./data.json')
+    fetch('/api/notion')
       .then(res => res.json())
       .then(json => {
         setData(json);
@@ -139,25 +139,7 @@ const App = () => {
       <footer style={{ textAlign: 'center', padding: '20px', fontSize: '0.8rem', opacity: 0.6, color: 'var(--ink-color)' }}>
         Last sync: {data.lastUpdated ? DateTime.fromISO(data.lastUpdated).setZone('Asia/Taipei').toFormat('MM/dd HH:mm') : 'Unknown'}
         <br />
-        (Data updates hourly via GitHub Actions)
-        <br />
-        <a
-          href="https://github.com/ZacHBT/dailyaction/actions/workflows/deploy.yml"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            display: 'inline-block',
-            marginTop: '10px',
-            padding: '5px 10px',
-            background: 'var(--ink-color)',
-            color: 'var(--paper-color)',
-            textDecoration: 'none',
-            borderRadius: '4px',
-            fontSize: '0.75rem'
-          }}
-        >
-          🔄 Sync Data Now (GitHub)
-        </a>
+        (Real-time data from Vercel)
       </footer>
     </div>
   );
