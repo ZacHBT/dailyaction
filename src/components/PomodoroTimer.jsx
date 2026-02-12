@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './PomodoroTimer.css';
 
-const PomodoroTimer = ({ isWorkTime }) => {
+const PomodoroTimer = ({ isWorkTime, isOpen, onClose }) => {
     const WORK_TIME = 25 * 60;
     const BREAK_TIME = 5 * 60;
 
@@ -45,23 +45,26 @@ const PomodoroTimer = ({ isWorkTime }) => {
     };
 
     return (
-        <div className={`pomodoro-container ${isWorkTime ? 'day-theme' : 'night-theme'}`}>
-            <div className="timer-display">
-                {formatTime(timeLeft)}
-            </div>
-            <div className="timer-controls">
-                <button className="rune-button" onClick={toggleTimer}>
-                    {isActive ? '⏸' : '▶'}
-                </button>
-                <button className="rune-button" onClick={resetTimer}>
-                    ↺
-                </button>
-                <button className="rune-button mode-switch" onClick={switchMode}>
-                    {isBreak ? '⚒' : '☕'}
-                </button>
-            </div>
-            <div className="timer-label">
-                {isBreak ? 'Rest' : 'Focus'}
+        <div className={`pomodoro-modal-overlay ${isOpen ? 'open' : 'closed'}`}>
+            <div className={`pomodoro-container ${isWorkTime ? 'day-theme' : 'night-theme'}`}>
+                <button className="close-btn" onClick={onClose}>×</button>
+                <div className="timer-display">
+                    {formatTime(timeLeft)}
+                </div>
+                <div className="timer-controls">
+                    <button className="rune-button" onClick={toggleTimer}>
+                        {isActive ? '⏸' : '▶'}
+                    </button>
+                    <button className="rune-button" onClick={resetTimer}>
+                        ↺
+                    </button>
+                    <button className="rune-button mode-switch" onClick={switchMode}>
+                        {isBreak ? '⚒' : '☕'}
+                    </button>
+                </div>
+                <div className="timer-label">
+                    {isBreak ? '休息' : '專注'}
+                </div>
             </div>
         </div>
     );

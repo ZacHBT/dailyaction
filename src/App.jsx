@@ -111,6 +111,8 @@ const App = () => {
 
 
 
+  const [isPomodoroOpen, setIsPomodoroOpen] = useState(false);
+
   return (
     <div className={`app-container ${isWorkTime ? 'mode-day' : 'mode-night'}`}>
 
@@ -119,15 +121,36 @@ const App = () => {
       <header className="header">
         <div className="time-display" onClick={toggleMode} style={{ cursor: 'pointer', userSelect: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center' }} title="Click time to toggle Day/Night/Auto">
           <div className="date-text" style={{ fontSize: '1.2rem', fontFamily: 'var(--font-serif)', marginBottom: '5px', opacity: 0.8 }}>
-            {now.toFormat('MMMM dd, yyyy')}
+            {now.toFormat('yyyy年MM月dd日')}
           </div>
           <div style={{ lineHeight: 1 }}>
             {now.toFormat('HH:mm')}
             {manualMode && <span style={{ fontSize: '1rem', marginLeft: '10px', verticalAlign: 'middle' }}>({manualMode === 'day' ? 'Day' : 'Night'})</span>}
           </div>
         </div>
+
         <CelestialCycle isWorkTime={isWorkTime} toggleMode={toggleMode} />
-        <PomodoroTimer isWorkTime={isWorkTime} />
+
+        <button
+          className="pomodoro-toggle-btn"
+          onClick={() => setIsPomodoroOpen(true)}
+          title="Open Pomodoro Timer"
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '20px',
+            background: 'transparent',
+            border: 'none',
+            fontSize: '1.5rem',
+            cursor: 'pointer',
+            opacity: 0.7,
+            transition: 'opacity 0.3s'
+          }}
+        >
+          ⏱️
+        </button>
+
+        <PomodoroTimer isWorkTime={isWorkTime} isOpen={isPomodoroOpen} onClose={() => setIsPomodoroOpen(false)} />
       </header>
 
       <main>
