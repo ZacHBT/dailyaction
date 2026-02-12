@@ -132,22 +132,12 @@ const App = () => {
         <CelestialCycle isWorkTime={isWorkTime} toggleMode={toggleMode} />
 
         <button
-          className="pomodoro-toggle-btn"
+          className="pomodoro-trigger-btn"
           onClick={() => setIsPomodoroOpen(true)}
           title="Open Pomodoro Timer"
-          style={{
-            position: 'absolute',
-            top: '20px',
-            right: '20px',
-            background: 'transparent',
-            border: 'none',
-            fontSize: '1.5rem',
-            cursor: 'pointer',
-            opacity: 0.7,
-            transition: 'opacity 0.3s'
-          }}
         >
-          ⏱️
+          <div className="trigger-icon">⏳</div>
+          <div className="trigger-glow"></div>
         </button>
 
         <PomodoroTimer isWorkTime={isWorkTime} isOpen={isPomodoroOpen} onClose={() => setIsPomodoroOpen(false)} />
