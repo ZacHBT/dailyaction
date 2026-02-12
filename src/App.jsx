@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DateTime } from 'luxon';
+import PomodoroTimer from './components/PomodoroTimer';
+import './App.css';
 
 const App = () => {
   const [now, setNow] = useState(DateTime.now().setZone('Asia/Taipei'));
@@ -107,17 +109,25 @@ const App = () => {
     </div>
   );
 
+
+
   return (
     <div className={`app-container ${isWorkTime ? 'mode-day' : 'mode-night'}`}>
 
       {/* Corner Decorations - Removed */}
 
       <header className="header">
-        <div className="time-display" onClick={toggleMode} style={{ cursor: 'pointer', userSelect: 'none' }} title="Click time to toggle Day/Night/Auto">
-          {now.toFormat('HH:mm')}
-          {manualMode && <span style={{ fontSize: '1rem', marginLeft: '10px', verticalAlign: 'middle' }}>({manualMode === 'day' ? 'Day' : 'Night'})</span>}
+        <div className="time-display" onClick={toggleMode} style={{ cursor: 'pointer', userSelect: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center' }} title="Click time to toggle Day/Night/Auto">
+          <div className="date-text" style={{ fontSize: '1.2rem', fontFamily: 'var(--font-serif)', marginBottom: '5px', opacity: 0.8 }}>
+            {now.toFormat('MMMM dd, yyyy')}
+          </div>
+          <div style={{ lineHeight: 1 }}>
+            {now.toFormat('HH:mm')}
+            {manualMode && <span style={{ fontSize: '1rem', marginLeft: '10px', verticalAlign: 'middle' }}>({manualMode === 'day' ? 'Day' : 'Night'})</span>}
+          </div>
         </div>
         <CelestialCycle isWorkTime={isWorkTime} toggleMode={toggleMode} />
+        <PomodoroTimer isWorkTime={isWorkTime} />
       </header>
 
       <main>
