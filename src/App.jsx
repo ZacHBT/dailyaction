@@ -3,10 +3,57 @@ import { DateTime } from 'luxon';
 import PomodoroTimer from './components/PomodoroTimer';
 import './App.css';
 
+const MOCK_DATA = {
+  tasks: [
+    { id: '1', name: '探索神秘遺跡 (Mock)', category: '工作', completed: false, url: '#' },
+    { id: '2', name: '配置龍族魔法防禦 (Mock)', category: '工作', completed: true, url: '#' },
+    { id: '3', name: '餵養鳳凰 (Mock)', category: '個人', completed: false, url: '#' },
+    { id: '4', name: '在星光下冥想 (Mock)', category: '個人', completed: true, url: '#' },
+  ],
+  lastUpdated: new Date().toISOString()
+};
+
 const App = () => {
   const [now, setNow] = useState(DateTime.now().setZone('Asia/Taipei'));
   const [data, setData] = useState({ tasks: [], lastUpdated: null });
   const [loading, setLoading] = useState(true);
+  const [isMock, setIsMock] = useState(false);
+  const [pomodoroStats, setPomodoroStats] = useState(() => {
+    const saved = localStorage.getItem('pomodoroStats');
+    return saved ? JSON.parse(saved) : {};
+  });
+
+  useEffect(() => {
+    localStorage.setItem('pomodoroStats', JSON.stringify(pomodoroStats));
+  }, [pomodoroStats]);
+
+  const handlePomodoroComplete = (taskId) => {
+    setPomodoroStats(prev => ({
+      ...prev,
+      [taskId]: (prev[taskId] || 0) + 1
+    }));
+  };
+
+  const fetchData = () => {
+    setLoading(true);
+    fetch('/api/notion')
+      .then(res => {
+        if (!res.ok) throw new Error('API request failed');
+        return res.json();
+      })
+      .then(json => {
+        if (json.error || !json.tasks) throw new Error('Invalid JSON');
+        setData(json);
+        setLoading(false);
+        setIsMock(false);
+      })
+      .catch(err => {
+        console.warn('Using MOCK_DATA due to fetch failure:', err.message);
+        setData(MOCK_DATA);
+        setLoading(false);
+        setIsMock(true);
+      });
+  };
 
   useEffect(() => {
     // Update time every minute
@@ -14,17 +61,8 @@ const App = () => {
       setNow(DateTime.now().setZone('Asia/Taipei'));
     }, 60000);
 
-    // Fetch tasks
-    fetch('/api/notion')
-      .then(res => res.json())
-      .then(json => {
-        setData(json);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Failed to load tasks', err);
-        setLoading(false);
-      });
+    // Initial fetch
+    fetchData();
 
     return () => clearInterval(timer);
   }, []);
@@ -73,14 +111,34 @@ const App = () => {
     );
   };
 
-  const TaskItem = ({ task }) => (
-    <a href={task.url} target="_blank" rel="noopener noreferrer" className="task-card">
-      <div className="task-info">
-        <span className="task-name">{task.name}</span>
-      </div>
-      {task.completed && <span className="completed-badge">DONE</span>}
-    </a>
-  );
+  const [isPomodoroOpen, setIsPomodoroOpen] = useState(false);
+  const [isSelectingTask, setIsSelectingTask] = useState(false);
+  const [activeTask, setActiveTask] = useState(null);
+
+  const startPomodoro = (task) => {
+    setActiveTask(task);
+    setIsSelectingTask(false);
+    setIsPomodoroOpen(true);
+  };
+
+  const currentModeTasks = isWorkTime ? workTasks : personalTasks;
+
+  const TaskItem = ({ task }) => {
+    const tomatoes = pomodoroStats[task.id] || 0;
+    return (
+      <a href={task.url} target="_blank" rel="noopener noreferrer" className="task-card">
+        <div className="task-info">
+          {tomatoes > 0 && (
+            <span className="tomato-marker" title={`已完成 ${tomatoes} 個番茄`}>
+              {'🍅'.repeat(tomatoes)}
+            </span>
+          )}
+          <span className="task-name">{task.name}</span>
+        </div>
+        {task.completed && <span className="completed-badge">DONE</span>}
+      </a>
+    );
+  };
 
   const CelestialCycle = ({ isWorkTime, toggleMode }) => (
     <div className="astrolabe-container" onClick={toggleMode} title="Click to toggle Day/Night">
@@ -111,7 +169,7 @@ const App = () => {
 
 
 
-  const [isPomodoroOpen, setIsPomodoroOpen] = useState(false);
+
 
   return (
     <div className={`app-container ${isWorkTime ? 'mode-day' : 'mode-night'}`}>
@@ -133,14 +191,41 @@ const App = () => {
 
         <button
           className="pomodoro-trigger-btn"
-          onClick={() => setIsPomodoroOpen(true)}
-          title="Open Pomodoro Timer"
+          onClick={() => setIsSelectingTask(!isSelectingTask)}
+          title="Choose task for Pomodoro"
         >
           <div className="trigger-icon">⏳</div>
           <div className="trigger-glow"></div>
         </button>
 
-        <PomodoroTimer isWorkTime={isWorkTime} isOpen={isPomodoroOpen} onClose={() => setIsPomodoroOpen(false)} />
+        {isSelectingTask && (
+          <div className="task-selector-overlay" onClick={() => setIsSelectingTask(false)}>
+            <div className="task-selector-dropdown" onClick={e => e.stopPropagation()}>
+              <div className="selector-header">選擇專注目標</div>
+              {currentModeTasks.length > 0 ? (
+                currentModeTasks.map(task => (
+                  <div
+                    key={task.id}
+                    className="selector-item"
+                    onClick={() => startPomodoro(task)}
+                  >
+                    {task.name}
+                  </div>
+                ))
+              ) : (
+                <div className="selector-empty">目前無可選任務</div>
+              )}
+            </div>
+          </div>
+        )}
+
+        <PomodoroTimer
+          isWorkTime={isWorkTime}
+          isOpen={isPomodoroOpen}
+          onClose={() => setIsPomodoroOpen(false)}
+          activeTask={activeTask}
+          onComplete={() => handlePomodoroComplete(activeTask?.id)}
+        />
       </header>
 
       <main>
@@ -179,12 +264,25 @@ const App = () => {
         </section>
       </main>
 
+      <div className="controls-area">
+        <button
+          className="refresh-btn-footer"
+          onClick={fetchData}
+          disabled={loading}
+          title="Refresh Data"
+        >
+          <span className={`refresh-icon ${loading ? 'spinning' : ''}`}>🔄</span>
+          <span className="refresh-text">同步資料</span>
+        </button>
+      </div>
+
       {loading && (
         <div style={{ position: 'fixed', bottom: '20px', right: '20px', opacity: 0.5, fontSize: '12px' }}>
           Loading...
         </div>
       )}
       <footer style={{ textAlign: 'center', padding: '20px', fontSize: '0.8rem', opacity: 0.6, color: 'var(--ink-color)' }}>
+        {isMock && <div className="mock-warning">⚠️ 目前正處於模擬開發模式 (API 連線失敗)</div>}
         Last sync: {data.lastUpdated ? DateTime.fromISO(data.lastUpdated).setZone('Asia/Taipei').toFormat('MM/dd HH:mm') : 'Unknown'}
         <br />
         (Real-time data from Vercel)
