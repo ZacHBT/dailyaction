@@ -206,15 +206,18 @@
   cursor: pointer;
   border-radius: 8px;
   transition: all 0.2s ease;
-  color: var(--ink-color);
+  color: #2c1e14;
+  /* 強制使用深色墨水色 */
+  background: rgba(255, 255, 255, 0.2);
+  margin-bottom: 4px;
   text-align: left;
   font-size: 0.95rem;
   line-height: 1.4;
 }
 
 .selector-item:hover {
-  background: rgba(212, 175, 55, 0.15);
-  color: var(--scroll-gold);
+  background: rgba(212, 175, 55, 0.2);
+  color: #2c1e14;
 }
 
 .selector-empty {

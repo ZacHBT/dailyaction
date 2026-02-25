@@ -207,7 +207,11 @@ const App = () => {
                   <div
                     key={task.id}
                     className="selector-item"
-                    onClick={() => startPomodoro(task)}
+                    onClick={() => {
+                      setActiveTask(task);
+                      setIsSelectingTask(false);
+                      setIsPomodoroOpen(true);
+                    }}
                   >
                     {task.name}
                   </div>

@@ -1,13 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import './PomodoroTimer.css';
 
-const PomodoroTimer = ({ isWorkTime, isOpen, onClose }) => {
+const PomodoroTimer = ({ isWorkTime, isOpen, onClose, activeTask, onComplete }) => {
     const WORK_TIME = 25 * 60;
     const BREAK_TIME = 5 * 60;
 
     const [timeLeft, setTimeLeft] = useState(WORK_TIME);
     const [isActive, setIsActive] = useState(false);
     const [isBreak, setIsBreak] = useState(false);
+
+    // Auto-start when a task is selected and modal opens
+    useEffect(() => {
+        if (isOpen && activeTask) {
+            setIsActive(true);
+            setTimeLeft(isBreak ? BREAK_TIME : WORK_TIME); // 根據當前模式重置時間
+        } else if (!isOpen) {
+            setIsActive(false);
+        }
+    }, [isOpen, activeTask?.id]); // 監聽任務 ID 變動
 
     useEffect(() => {
         let interval = null;
@@ -17,10 +27,12 @@ const PomodoroTimer = ({ isWorkTime, isOpen, onClose }) => {
             }, 1000);
         } else if (timeLeft === 0) {
             setIsActive(false);
-            // Optional: Play sound here
+            if (!isBreak && onComplete) {
+                onComplete();
+            }
         }
         return () => clearInterval(interval);
-    }, [isActive, timeLeft]);
+    }, [isActive, timeLeft, isBreak, onComplete]);
 
     const toggleTimer = () => {
         setIsActive(!isActive);
@@ -48,6 +60,9 @@ const PomodoroTimer = ({ isWorkTime, isOpen, onClose }) => {
         <div className={`pomodoro-modal-overlay ${isOpen ? 'open' : 'closed'}`}>
             <div className={`pomodoro-container ${isWorkTime ? 'day-theme' : 'night-theme'}`}>
                 <button className="close-btn" onClick={onClose}>×</button>
+                <div className="active-task-name">
+                    {activeTask ? `🎯 ${activeTask.name}` : '未指定任務'}
+                </div>
                 <div className="timer-display">
                     {formatTime(timeLeft)}
                 </div>
@@ -63,7 +78,7 @@ const PomodoroTimer = ({ isWorkTime, isOpen, onClose }) => {
                     </button>
                 </div>
                 <div className="timer-label">
-                    {isBreak ? '休息' : '專注'}
+                    {isBreak ? '休息' : '專注中'}
                 </div>
             </div>
         </div>
