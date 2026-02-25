@@ -1,0 +1,20 @@
+{
+    "short_name": "Daily",
+    "name": "Daily Action - 魔法日誌",
+    "icons": [
+        {
+            "src": "icon.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icon.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "start_url": ".",
+    "display": "standalone",
+    "theme_color": "#d1b894",
+    "background_color": "#f4e4bc"
+}
