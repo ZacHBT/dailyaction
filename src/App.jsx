@@ -32,6 +32,18 @@ const App = () => {
       ...prev,
       [taskId]: (prev[taskId] || 0) + 1
     }));
+
+    if (!isMock && taskId) {
+      fetch('/api/add-pomodoro', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ taskId })
+      }).catch(err => {
+        console.error('Failed to log pomodoro:', err);
+      });
+    }
   };
 
   const fetchData = () => {
