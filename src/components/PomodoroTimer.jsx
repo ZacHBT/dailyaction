@@ -25,7 +25,7 @@ const PomodoroTimer = ({ isWorkTime, isOpen, onClose, activeTask, onComplete }) 
             interval = setInterval(() => {
                 setTimeLeft(timeLeft - 1);
             }, 1000);
-        } else if (timeLeft === 0) {
+        } else if (isActive && timeLeft === 0) {
             setIsActive(false);
             if (!isBreak && onComplete) {
                 onComplete();
